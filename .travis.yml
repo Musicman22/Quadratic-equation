@@ -1,0 +1,9 @@
+language: c
+
+install: true
+
+script: make
+
+after_success: make clean
+
+after_failure: make clean
