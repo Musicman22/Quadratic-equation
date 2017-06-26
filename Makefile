@@ -1,5 +1,5 @@
-all: hello.c
-	gcc -Wall -o hello hello.c
+all: quadratic-equation.c
+	gcc -Wall -o quadratic-equation quadratic-equation.c -lm
 
 clean:
-	rm -rf hello
+	rm -rf quadratic-equation
