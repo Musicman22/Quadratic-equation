@@ -1,9 +1,13 @@
 language: c
 
-install: true
+install: 
+  - make
 
-script: make
+script:
+  - bin/quadratic-equation-test
 
-after_success: make clean
+after_success:
+  - make clean
 
-after_failure: make clean
+after_failure: 
+  - make clean

@@ -1,30 +1,32 @@
-CC := gcc
-CFLAGS := -c -Wall -Werror
-LFLAGS := -I thirdparty -I src -c
-EXE := bin/quadratic-equation
-EXE_TEST := bin/quadratic-equation-test
-SOURCES := build/src/main.o build/src/function.o
-all: $(EXE) $(EXE_TEST)
+.PHONY: clean all test
+CFLAGS = -Wall -Werror
 
-$(EXE): $(SOURCES)
-	$(CC) $(SOURCES) -o $@ -lm
+all: bin/quadratic-equation
 
-build/src/main.o: src/main.c
-	$(CC) $(CFLAGS) src/main.c -o $@
+bin/quadratic-equation: build/src/main.o build/src/function.o
+	@echo "Make is 100%"
+	@gcc $(CFLAGS) build/src/main.o build/src/function.o -o bin/quadratic-equation -lm
 
-build/src/function.o: src/function.c
-	$(CC) $(CFLAGS) src/function.c -o $@
+build/src/main.o: src/main.c src/function.h
+	@gcc $(CFLAGS) -c src/main.c -o build/src/main.o -lm
 
-$(EXE_TEST): build/test/function_test.o build/test/main.o build/src/function.o
-	$(CC) build/test/function_test.o build/test/main.o build/src/function.o -o $@
+build/src/function.o: src/function.c src/function.h
+	@gcc $(CFLAGS) -c src/function.c -o build/src/function.o
 
-build/test/function_test.o: test/function_test.c
-	$(CC) $(LFLAGS) test/function_test.c -o $@
+test:
+	make bin/quadratic-equation_test
+	bin/quadratic-equation_test
 
-build/test/main.o: test/main.c
-	$(CC) -I thirdparty -c test/main.c -o $@
+bin/quadratic-equation_test: build/test/main.o build/test/function_test.o
+	@gcc $(CFLAGS) build/test/main.o build/test/function_test.o build/src/function.o -o bin/quadratic-equation_test
 
-.PHONY: all clean
+build/test/main.o: test/main.c src/function.h
+	@gcc $(CFLAGS) -I thirdparty -c test/main.c -o build/test/main.o
+
+build/test/function_test.o: src/function.h test/function_test.c
+	@gcc $(CFlAGS) -I thirdparty -c test/function_test.c -o build/test/function_test.o
+
 clean:
+	@echo "Cleaning files in build directory"
 	rm -rf build/*/*.o
 	rm -rf bin/*
